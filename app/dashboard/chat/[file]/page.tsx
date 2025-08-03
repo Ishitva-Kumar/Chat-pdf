@@ -63,7 +63,7 @@ export default function FileChat() {
     <div className="p-6 flex flex-col h-screen">
       <h2 className="text-xl font-semibold mb-4">Chat about: {file}</h2>
 
-      <div className="flex-1 overflow-y-auto border rounded-lg p-4 space-y-3 bg-gray-50">
+      <div className="flex-1 overflow-y-auto border rounded-lg p-4 space-y-3">
         {messages.map((msg, i) => (
           <div
             key={i}
@@ -74,8 +74,8 @@ export default function FileChat() {
             <div
               className={`p-3 rounded-lg max-w-xl ${
                 msg.role === 'user'
-                  ? 'bg-blue-100 text-right'
-                  : 'bg-gray-200 text-left'
+                  ? 'bg-blue-800 text-right'
+                  : 'bg-gray-800 text-left'
               }`}
             >
               {msg.content}
