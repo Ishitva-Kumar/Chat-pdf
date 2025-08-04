@@ -65,13 +65,14 @@ export default function FileChat() {
   };
 
   return (
-    <div className="flex flex-col h-screen p-6">
-      <h2 className="text-xl font-bold mb-2">{fileName ? `Chat about: ${fileName}` : "Chat"}</h2>
-      <div className="flex-1 overflow-y-auto border p-2 mb-2 bg-gray-50 rounded">
+    <div style={{ background: "var(--background)", color: "var(--foreground)", minHeight: "100svh" }} className="flex flex-col h-screen p-6">
+      <h2 className="text-xl font-bold mb-2" style={{ color: "var(--primary)" }}>{fileName ? `Chat about: ${fileName}` : "Chat"}</h2>
+      <div style={{ background: "var(--card)", color: "var(--card-foreground)", border: "1px solid var(--border)", borderRadius: 8 }} className="flex-1 overflow-y-auto p-2 mb-2">
         {messages.map((msg, idx) => (
-          <div key={idx} className={`mb-2 ${msg.role === "user" ? "text-right" : "text-left"}`}>
-            <span className={msg.role === "user" ? "font-bold text-blue-600" : "font-bold text-green-600"}>
-              {msg.role === "user" ? "You" : "Gemini"}:
+          <div key={idx} className={`mb-2 ${msg.role === "user" ? "text-right" : "text-left"}`}
+            style={{ color: msg.role === "user" ? "var(--primary)" : "var(--primary)" }}>
+            <span style={{ fontWeight: 600 }}>
+              {msg.role === "user" ? "You" : "ChatPDF"}:
             </span>{" "}
             {msg.content}
           </div>
@@ -85,11 +86,13 @@ export default function FileChat() {
           onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
           placeholder="Type your question..."
           disabled={isLoading}
+          style={{ background: "var(--input)", color: "var(--foreground)", border: "1px solid var(--border)", borderRadius: 4 }}
         />
         <button
-          className="ml-2 px-4 py-1 bg-blue-500 text-white rounded"
+          className="ml-2 px-4 py-1"
           onClick={handleSend}
           disabled={isLoading}
+          style={{ background: "var(--primary)", color: "var(--primary-foreground)", border: "none", borderRadius: 4, marginLeft: 8, padding: "6px 16px", cursor: isLoading ? "not-allowed" : "pointer" }}
         >
           Send
         </button>
