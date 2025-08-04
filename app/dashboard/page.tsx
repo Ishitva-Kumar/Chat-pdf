@@ -2,8 +2,13 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
+type UploadedFile = {
+  fileName: string;
+  fileUrl: string;
+};
+
 export default function Dashboard() {
-  const [files, setFiles] = useState<any[]>([]);
+  const [files, setFiles] = useState<UploadedFile[]>([]);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
 
@@ -27,7 +32,7 @@ export default function Dashboard() {
     if (!res.ok) {
       setError("Upload failed");
     } else {
-      const newFile = await res.json();
+      const newFile: UploadedFile = await res.json();
       setFiles((f) => [newFile, ...f]);
     }
     setUploading(false);
@@ -44,7 +49,7 @@ export default function Dashboard() {
       {error && <div style={{ color: "var(--destructive)" }}>{error}</div>}
       <div className="flex flex-col space-y-2">
         {files.length === 0 && <div>No files uploaded yet.</div>}
-        {files.map((file: any) => (
+        {files.map((file) => (
           <div key={file.fileUrl} style={{ background: "var(--card)", color: "var(--card-foreground)", border: "1px solid var(--border)", borderRadius: 8, padding: 12, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <a href={file.fileUrl} target="_blank" rel="noopener noreferrer" style={{ color: "var(--primary)", textDecoration: "underline" }}>
               {file.fileName}

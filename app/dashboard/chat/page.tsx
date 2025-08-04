@@ -1,4 +1,5 @@
 "use client";
+import { Suspense } from "react";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { GoogleGenAI } from "@google/genai";
@@ -13,13 +14,27 @@ function arrayBufferToBase64(buffer: ArrayBuffer) {
   return window.btoa(binary);
 }
 
-export default function FileChat() {
+type ChatMessage = {
+  role: "user" | "ai";
+  content: string;
+};
+
+function isErrorWithMessage(err: unknown): err is { message: string } {
+  return (
+    typeof err === "object" &&
+    err !== null &&
+    "message" in err &&
+    typeof (err as { message?: unknown }).message === "string"
+  );
+}
+
+function FileChat() {
   const searchParams = useSearchParams();
   const fileUrl = searchParams.get("fileUrl");
   const fileName = searchParams.get("fileName");
 
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<{ role: "user" | "ai"; content: string }[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSend = async () => {
@@ -54,10 +69,14 @@ export default function FileChat() {
       });
 
       setMessages((prev) => [...prev, { role: "ai", content: response.text || "No response" }]);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      let errorMsg = "Unknown error";
+      if (isErrorWithMessage(err)) {
+        errorMsg = err.message;
+      }
       setMessages((prev) => [
         ...prev,
-        { role: "ai", content: `Error: ${err.message || "Unknown error"}` },
+        { role: "ai", content: `Error: ${errorMsg}` },
       ]);
     } finally {
       setIsLoading(false);
@@ -98,5 +117,13 @@ export default function FileChat() {
         </button>
       </div>
     </div>
+  );
+}
+
+export default function ChatPage() {
+  return (
+    <Suspense fallback={<div>Loading chat...</div>}>
+      <FileChat />
+    </Suspense>
   );
 }
